@@ -1,0 +1,43 @@
+name: Manifest Validation
+
+on:
+  workflow_call:
+    inputs:
+      kustomize_build_dir:
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: testing
+        shell: bash
+        run: echo testing $test
+
+      - uses: actions/checkout@v2
+
+      - name: 'Kustomize Build'
+        uses: karancode/kustomize-github-action@master
+        with:
+          kustomize_version: '4.4.0'
+          kustomize_build_dir: ${{ inputs.kustomize_build_dir }}
+          kustomize_comment: true
+          kustomize_output_file: "build.yaml"
+
+      - name: login to Github Packages
+        run: echo ${${{ github.token }}:-$GITHUB_TOKEN} | docker login https://ghcr.io -u ${GITHUB_ACTOR} --password-stdin
+
+      - name: kubeconform
+        uses: docker://ghcr.io/yannh/kubeconform:master
+        with:
+          entrypoint: '/kubeconform'
+          args: "-ignore-missing-schemas -ignore-filename-pattern ^. -summary -output json ./"
+
+      - name: conftest
+        uses: instrumenta/conftest-action@v0.4.0
+        with:
+          policy: conftest/policies.rego
+          files: build.yaml
+          output: tap
