@@ -41,3 +41,9 @@ jobs:
           policy: conftest/policies.rego
           files: build.yaml
           output: tap
+
+      - name: conftest
+        uses: YubicoLabs/action-conftest@v2
+        with:
+          policy: conftest/policies.rego
+          files: build.yaml
