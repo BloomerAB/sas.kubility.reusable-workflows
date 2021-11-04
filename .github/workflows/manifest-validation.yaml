@@ -12,10 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: testing
-        shell: bash
-        run: echo testing ${{ inputs.kustomize_build_dir }}
-
       - uses: actions/checkout@v2
 
       - name: 'Kustomize Build'
@@ -36,15 +32,7 @@ jobs:
           args: "-ignore-missing-schemas -ignore-filename-pattern ^. -summary -output json ./"
 
       - name: conftest
-        uses: instrumenta/conftest-action@v0.4.0
-        with:
-          policy: conftest/policies.rego
-          files: build.yaml
-          output: tap
-
-      - name: conftest
         uses: YubicoLabs/action-conftest@v2
         with:
           pull-url: https://raw.githubusercontent.com/BloomerAB/sas.kubility.reusable-workflows/main/conftest/policies.rego
-          # policy: conftest/policies.rego
           files: build.yaml
