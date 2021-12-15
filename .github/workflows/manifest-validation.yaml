@@ -34,5 +34,5 @@ jobs:
       - name: conftest
         uses: YubicoLabs/action-conftest@v2
         with:
-          pull-url: https://raw.githubusercontent.com/BloomerAB/sas.kubility.reusable-workflows/main/conftest/policies.rego
+          pull-url: https://raw.githubusercontent.com/BloomerAB/sas.kubility.reusable-workflows/main/conftest/kubernetes/
           files: build.yaml
