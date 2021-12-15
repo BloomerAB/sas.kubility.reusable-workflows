@@ -1,0 +1,26 @@
+name: Merge to release branch
+on:
+  workflow_call:
+    inputs:
+      to_cluster:
+        required: true
+        type: string
+
+jobs:
+  merge-to-release-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Flux CD github action release"
+
+      - name: Release to ${{ inputs.to_cluster }} cluster
+        run: |
+          git fetch --unshallow
+          git checkout release/${{ inputs.to_cluster }}
+          git pull
+          git merge --no-ff main -m "Release to ${{ inputs.to_cluster }} cluster"
+          git push
