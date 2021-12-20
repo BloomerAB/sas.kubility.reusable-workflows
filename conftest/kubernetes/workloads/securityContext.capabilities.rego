@@ -10,5 +10,5 @@ deny_any_privileges[msg] {
 }
 
 drop_all_capabilities(container, capability) {
-  container.securityContext.capabilities.drop[_] == capability
+  lower(container.securityContext.capabilities.drop[_]) == capability
 }
