@@ -31,8 +31,16 @@ jobs:
           entrypoint: '/kubeconform'
           args: "-ignore-missing-schemas -ignore-filename-pattern ^. -summary -output json ./"
 
-      - name: conftest
-        uses: YubicoLabs/action-conftest@v2
+      - name: checkout conftest policies
+        uses: actions/checkout@v2
         with:
-          pull-url: https://raw.githubusercontent.com/BloomerAB/sas.kubility.reusable-workflows/main/conftest/kubernetes/
-          files: build.yaml
+          repository: BloomerAB/sas.kubility.reusable-workflows
+          path: sas.kubility.reusable-workflows
+
+      - name: conftest
+        uses: stefanprodan/kube-tools@v1
+        with:
+          conftest: 0.28.3
+          command: |
+            mv sas.kubility.reusable-workflows/conftest/kubernetes/workloads ./policy && rm -rf sas.kubility.reusable-workflows
+            conftest test --all-namespaces -o table build.yaml
